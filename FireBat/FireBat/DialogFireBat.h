@@ -15,7 +15,11 @@ public:
 	enum { IDD = IDD_DIALOG_FIREBAT };
 
 protected:
+	HICON m_hIcon;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual BOOL OnInitDialog();
+	afx_msg void OnPaint();
 };
