@@ -1,5 +1,5 @@
 #pragma once
-
+#include "DialogSetRule.h"
 
 // CDialogFireBat 대화 상자입니다.
 
@@ -22,4 +22,9 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
+	// 패킷 분석 결과를 출력하는 Edit 컨트롤 문자열 변수
+	CString m_cstrAnalysisResult;
+	afx_msg void OnBnClickedButtonClear();
+	afx_msg void OnBnClickedButtonSettingRules();
+	CDialogSetRule * m_pDlg;
 };

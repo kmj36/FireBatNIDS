@@ -190,6 +190,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DialogSetRule.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FireBat.cpp"
 				>
 			</File>
@@ -221,6 +225,10 @@
 			>
 			<File
 				RelativePath=".\DialogFireBat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DialogSetRule.h"
 				>
 			</File>
 			<File

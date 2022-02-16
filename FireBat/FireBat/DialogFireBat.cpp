@@ -12,6 +12,7 @@ IMPLEMENT_DYNAMIC(CDialogFireBat, CDialog)
 
 CDialogFireBat::CDialogFireBat(CWnd* pParent /*=NULL*/)
 	: CDialog(CDialogFireBat::IDD, pParent)
+	, m_cstrAnalysisResult(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -23,11 +24,14 @@ CDialogFireBat::~CDialogFireBat()
 void CDialogFireBat::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_cstrAnalysisResult);
 }
 
 
 BEGIN_MESSAGE_MAP(CDialogFireBat, CDialog)
 	ON_WM_PAINT()
+	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CDialogFireBat::OnBnClickedButtonClear)
+	ON_BN_CLICKED(IDC_BUTTON_SETTING_RULES, &CDialogFireBat::OnBnClickedButtonSettingRules)
 END_MESSAGE_MAP()
 
 
@@ -38,15 +42,17 @@ BOOL CDialogFireBat::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+	m_cstrAnalysisResult += _T("테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트");
 	
 
 	// 이 대화 상자의 아이콘을 설정합니다. 응용 프로그램의 주 창이 대화 상자가 아닐 경우에는
 	//  프레임워크가 이 작업을 자동으로 수행합니다.
 	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
-
+	
+	UpdateData(FALSE);
 	return TRUE;  // return TRUE unless you set the focus to a control
-	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
+	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.	
 }
 
 void CDialogFireBat::OnPaint()
@@ -72,4 +78,17 @@ void CDialogFireBat::OnPaint()
 	{
 		CDialog::OnPaint();
 	}
+}
+void CDialogFireBat::OnBnClickedButtonClear()
+{
+	m_cstrAnalysisResult.Empty();
+	UpdateData(FALSE);
+}
+
+void CDialogFireBat::OnBnClickedButtonSettingRules()
+{
+	m_pDlg = new CDialogSetRule;
+
+	m_pDlg->Create(IDD_DIALOG_SET_RULE);
+	m_pDlg->ShowWindow(SW_SHOW);
 }
