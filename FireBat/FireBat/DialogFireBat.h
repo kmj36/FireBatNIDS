@@ -16,6 +16,7 @@ public:
 
 protected:
 	HICON m_hIcon;
+	HMODULE m_hNIDS;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
@@ -26,5 +27,6 @@ public:
 	CString m_cstrAnalysisResult;
 	afx_msg void OnBnClickedButtonClear();
 	afx_msg void OnBnClickedButtonSettingRules();
-	CDialogSetRule * m_pDlg;
+	afx_msg void OnBnClickedButtonTestLoad();
+	afx_msg void OnBnClickedButtonTestFree();
 };

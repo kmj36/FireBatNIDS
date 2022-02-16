@@ -32,6 +32,8 @@ BEGIN_MESSAGE_MAP(CDialogFireBat, CDialog)
 	ON_WM_PAINT()
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CDialogFireBat::OnBnClickedButtonClear)
 	ON_BN_CLICKED(IDC_BUTTON_SETTING_RULES, &CDialogFireBat::OnBnClickedButtonSettingRules)
+	ON_BN_CLICKED(IDC_BUTTON_TEST_LOAD, &CDialogFireBat::OnBnClickedButtonTestLoad)
+	ON_BN_CLICKED(IDC_BUTTON_TEST_FREE, &CDialogFireBat::OnBnClickedButtonTestFree)
 END_MESSAGE_MAP()
 
 
@@ -87,8 +89,23 @@ void CDialogFireBat::OnBnClickedButtonClear()
 
 void CDialogFireBat::OnBnClickedButtonSettingRules()
 {
-	m_pDlg = new CDialogSetRule;
+	CDialogSetRule Dlg;
+	INT nDlgResult = Dlg.DoModal();
 
-	m_pDlg->Create(IDD_DIALOG_SET_RULE);
-	m_pDlg->ShowWindow(SW_SHOW);
+	if(nDlgResult == IDOK)
+	{
+		
+	}
+}
+
+void CDialogFireBat::OnBnClickedButtonTestLoad()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_hNIDS = LoadLibrary(_T("NIDS.dll"));
+}
+
+void CDialogFireBat::OnBnClickedButtonTestFree()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	FreeLibrary(m_hNIDS);
 }

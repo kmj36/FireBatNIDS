@@ -4,6 +4,8 @@
 // 이렇게 하면 소스 파일에 이 파일이 들어 있는 다른 모든 프로젝트에서는 
 // NIDS_API 함수를 DLL에서 가져오는 것으로 보고, 이 DLL은
 // 이 DLL은 해당 매크로로 정의된 기호가 내보내지는 것으로 봅니다.
+#include "FireBatIDS.h"
+
 #ifdef NIDS_EXPORTS
 #define NIDS_API __declspec(dllexport)
 #else
@@ -22,3 +24,5 @@ extern NIDS_API int nNIDS;
 
 NIDS_API int fnNIDS(void);
 */
+
+extern NIDS_API CFireBatIDS test;

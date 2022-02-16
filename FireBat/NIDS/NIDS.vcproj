@@ -61,6 +61,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
+				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -193,6 +194,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\FireBatIDS.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\NIDS.cpp"
 				>
 			</File>
@@ -222,6 +227,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\FireBatIDS.h"
+				>
+			</File>
 			<File
 				RelativePath=".\NIDS.h"
 				>
