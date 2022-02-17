@@ -5,6 +5,8 @@
 #define IDR_MAINFRAME                   128
 #define IDD_DIALOG_FIREBAT              129
 #define IDD_DIALOG_SET_RULE             130
+#define IDD_DIALOG_SET_LOG              131
+#define IDD_DIALOG_YESNOBOX             132
 #define IDC_EDIT_SHOW_RESULT            1000
 #define IDC_BUTTON_CLEAR                1001
 #define IDC_BUTTON_CAPTURE_START        1002
@@ -26,16 +28,16 @@
 #define IDC_COMBO4                      1021
 #define IDC_COMBO5                      1022
 #define IDC_BUTTON4                     1023
-#define IDC_BUTTON_TEST_LOAD            1024
-#define IDC_BUTTON_TEST_FREE            1025
+#define IDC_BUTTON_LOG_SETTING          1026
+#define IDC_STATIC_YESNO                1032
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_CONTROL_VALUE         1033
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

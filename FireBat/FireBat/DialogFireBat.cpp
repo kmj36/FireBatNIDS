@@ -12,7 +12,8 @@ IMPLEMENT_DYNAMIC(CDialogFireBat, CDialog)
 
 CDialogFireBat::CDialogFireBat(CWnd* pParent /*=NULL*/)
 	: CDialog(CDialogFireBat::IDD, pParent)
-	, m_cstrAnalysisResult(_T(""))
+	, m_hIDSThread(NULL)
+	, m_strDisplay(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -24,7 +25,7 @@ CDialogFireBat::~CDialogFireBat()
 void CDialogFireBat::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_cstrAnalysisResult);
+	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_strDisplay);
 }
 
 
@@ -32,8 +33,10 @@ BEGIN_MESSAGE_MAP(CDialogFireBat, CDialog)
 	ON_WM_PAINT()
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CDialogFireBat::OnBnClickedButtonClear)
 	ON_BN_CLICKED(IDC_BUTTON_SETTING_RULES, &CDialogFireBat::OnBnClickedButtonSettingRules)
-	ON_BN_CLICKED(IDC_BUTTON_TEST_LOAD, &CDialogFireBat::OnBnClickedButtonTestLoad)
-	ON_BN_CLICKED(IDC_BUTTON_TEST_FREE, &CDialogFireBat::OnBnClickedButtonTestFree)
+	ON_BN_CLICKED(IDC_BUTTON_CAPTURE_START, &CDialogFireBat::OnBnClickedButtonCaptureStart)
+	ON_BN_CLICKED(IDC_BUTTON_CAPTURE_STOP, &CDialogFireBat::OnBnClickedButtonCaptureStop)
+	ON_BN_CLICKED(IDC_BUTTON_LOG_SETTING, &CDialogFireBat::OnBnClickedButtonLogSetting)
+	ON_MESSAGE(UM_UPDATEDATA, &CDialogFireBat::OnUpdateDataFalse)
 END_MESSAGE_MAP()
 
 
@@ -44,7 +47,6 @@ BOOL CDialogFireBat::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
-	m_cstrAnalysisResult += _T("테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트");
 	
 
 	// 이 대화 상자의 아이콘을 설정합니다. 응용 프로그램의 주 창이 대화 상자가 아닐 경우에는
@@ -81,10 +83,33 @@ void CDialogFireBat::OnPaint()
 		CDialog::OnPaint();
 	}
 }
-void CDialogFireBat::OnBnClickedButtonClear()
+
+
+
+void CDialogFireBat::OnBnClickedButtonCaptureStart()
 {
-	m_cstrAnalysisResult.Empty();
-	UpdateData(FALSE);
+	if(m_hIDSThread)
+	{
+		CDialogYesNoBox Dlgyesnobox;
+		INT Result = Dlgyesnobox.DoModal();
+		return;
+	}
+
+	m_hIDSThread = AfxBeginThread((AFX_THREADPROC)TestThreadFunc, this);
+
+	if(!m_hIDSThread)
+	{
+		AfxMessageBox(_T("스레드를 초기화할 수 없습니다."));
+		return;
+	}
+
+	m_hIDSThread->m_bAutoDelete = FALSE;
+		
+}
+
+void CDialogFireBat::OnBnClickedButtonCaptureStop()
+{
+
 }
 
 void CDialogFireBat::OnBnClickedButtonSettingRules()
@@ -98,14 +123,23 @@ void CDialogFireBat::OnBnClickedButtonSettingRules()
 	}
 }
 
-void CDialogFireBat::OnBnClickedButtonTestLoad()
+void CDialogFireBat::OnBnClickedButtonLogSetting()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	m_hNIDS = LoadLibrary(_T("NIDS.dll"));
+	
 }
 
-void CDialogFireBat::OnBnClickedButtonTestFree()
+void CDialogFireBat::OnBnClickedButtonClear()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	FreeLibrary(m_hNIDS);
+
+}
+
+LRESULT CDialogFireBat::OnUpdateDataFalse(WPARAM wParam, LPARAM lParam)
+{
+	UpdateData(FALSE);
+	return 0;
+}
+
+LRESULT CDialogFireBat::TestThreadFunc(LPVOID pArg)
+{
+	return 0xDEADBEEF;
 }

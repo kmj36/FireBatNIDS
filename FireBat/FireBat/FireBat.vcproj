@@ -45,6 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;C:\npcap-sdk\Include&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,7 +68,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="wpcap.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;C:\npcap-sdk\Lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -194,7 +197,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DialogYesNoBox.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FireBat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FireBatNIDS.cpp"
 				>
 			</File>
 			<File
@@ -232,7 +243,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DialogYesNoBox.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FireBat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FireBatNIDS.h"
 				>
 			</File>
 			<File

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FireBat", "FireBat\FireBat.vcproj", "{78FAB7A9-90CD-47AA-A784-B26AEE6FC104}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NIDS", "NIDS\NIDS.vcproj", "{0C29C880-1125-4155-B4A6-C90CF1A881C5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -15,10 +13,6 @@ Global
 		{78FAB7A9-90CD-47AA-A784-B26AEE6FC104}.Debug|Win32.Build.0 = Debug|Win32
 		{78FAB7A9-90CD-47AA-A784-B26AEE6FC104}.Release|Win32.ActiveCfg = Release|Win32
 		{78FAB7A9-90CD-47AA-A784-B26AEE6FC104}.Release|Win32.Build.0 = Release|Win32
-		{0C29C880-1125-4155-B4A6-C90CF1A881C5}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0C29C880-1125-4155-B4A6-C90CF1A881C5}.Debug|Win32.Build.0 = Debug|Win32
-		{0C29C880-1125-4155-B4A6-C90CF1A881C5}.Release|Win32.ActiveCfg = Release|Win32
-		{0C29C880-1125-4155-B4A6-C90CF1A881C5}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
