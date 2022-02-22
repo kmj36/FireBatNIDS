@@ -1,30 +1,18 @@
-
-// FireBat.h : PROJECT_NAME ÀÀ¿ë ÇÁ·Î±×·¥¿¡ ´ëÇÑ ÁÖ Çì´õ ÆÄÀÏÀÔ´Ï´Ù.
-//
-
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error "PCH¿¡ ´ëÇØ ÀÌ ÆÄÀÏÀ» Æ÷ÇÔÇÏ±â Àü¿¡ 'stdafx.h'¸¦ Æ÷ÇÔÇÕ´Ï´Ù."
+	#error "PCHï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ 'stdafx.h'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½."
 #endif
 
-#include "resource.h"		// ÁÖ ±âÈ£ÀÔ´Ï´Ù.
-
-
-// CFireBatApp:
-// ÀÌ Å¬·¡½ºÀÇ ±¸Çö¿¡ ´ëÇØ¼­´Â FireBat.cppÀ» ÂüÁ¶ÇÏ½Ê½Ã¿À.
-//
+#include "resource.h"
 
 class CFireBatApp : public CWinAppEx
 {
 public:
 	CFireBatApp();
 
-// ÀçÁ¤ÀÇÀÔ´Ï´Ù.
-	public:
+public:
 	virtual BOOL InitInstance();
-
-// ±¸ÇöÀÔ´Ï´Ù.
 
 	DECLARE_MESSAGE_MAP()
 };

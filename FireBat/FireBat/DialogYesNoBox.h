@@ -1,21 +1,19 @@
 #pragma once
 
-
-// CDialogYesNoBox 대화 상자입니다.
-
 class CDialogYesNoBox : public CDialog
 {
 	DECLARE_DYNAMIC(CDialogYesNoBox)
 
 public:
-	CDialogYesNoBox(CWnd* pParent = NULL);   // 표준 생성자입니다.
+	CDialogYesNoBox(LPCTSTR strSetTitle, LPCTSTR strSetText, CWnd* pParent = NULL);
 	virtual ~CDialogYesNoBox();
 
-// 대화 상자 데이터입니다.
 	enum { IDD = IDD_DIALOG_YESNOBOX };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
+	virtual void DoDataExchange(CDataExchange* pDX);
 
 	DECLARE_MESSAGE_MAP()
+public:
+	CString m_strMainText;
 };

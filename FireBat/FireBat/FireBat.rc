@@ -16,13 +16,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// «—±πæÓ resources
+// ÌïúÍµ≠Ïñ¥(ÎåÄÌïúÎØºÍµ≠) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
-#ifdef _WIN32
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 #pragma code_page(949)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -54,8 +52,8 @@ BEGIN
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)\r\n"
     "LANGUAGE 18, 1\r\n"
     "#pragma code_page(949)\r\n"
-    "#include ""res\\FireBat.rc2""  // Microsoft Visual C++ ¿Ãø‹¿« ¥Ÿ∏• µµ±∏ø°º≠ ∆Ì¡˝«— ∏Æº“Ω∫¿‘¥œ¥Ÿ.\r\n"
-    "#include ""l.KOR\\afxres.rc""      // «•¡ÿ ±∏º∫ ø‰º“¿‘¥œ¥Ÿ.\r\n"
+    "#include ""res\\FireBat.rc2""  // Microsoft Visual C++ ????? ??? ???????? ?????? ?????????.\r\n"
+    "#include ""l.KOR\\afxres.rc""      // ??? ???? ???????.\r\n"
     "#endif\r\n"
     "\0"
 END
@@ -71,6 +69,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\FireBat.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -125,8 +124,7 @@ BEGIN
     PUSHBUTTON      "¡ˆøÏ±‚",IDC_BUTTON_CLEAR,17,294,50,14
     PUSHBUTTON      "Ω√¿€",IDC_BUTTON_CAPTURE_START,17,19,50,14
     PUSHBUTTON      "¡æ∑·",IDC_BUTTON_CAPTURE_STOP,17,40,50,14
-    PUSHBUTTON      "±‘ƒ¢ ¡ˆ¡§",IDC_BUTTON_SETTING_RULES,17,138,50,14
-    PUSHBUTTON      "∑Œ±◊ ¡ˆ¡§",IDC_BUTTON_LOG_SETTING,17,159,50,14
+    PUSHBUTTON      "±‘ƒ¢ ¡ˆ¡§",IDC_BUTTON_SETTING_RULES,17,151,50,14
 END
 
 IDD_DIALOG_SET_RULE DIALOGEX 0, 0, 505, 210
@@ -186,7 +184,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_DIALOG_FIREBAT, DIALOG
     BEGIN
@@ -222,7 +220,18 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // «—±πæÓ resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOG_FIREBAT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // ÌïúÍµ≠Ïñ¥(ÎåÄÌïúÎØºÍµ≠) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -240,8 +249,8 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE 18, 1
 #pragma code_page(949)
-#include "res\FireBat.rc2"  // Microsoft Visual C++ ¿Ãø‹¿« ¥Ÿ∏• µµ±∏ø°º≠ ∆Ì¡˝«— ∏Æº“Ω∫¿‘¥œ¥Ÿ.
-#include "l.KOR\afxres.rc"      // «•¡ÿ ±∏º∫ ø‰º“¿‘¥œ¥Ÿ.
+#include "res\FireBat.rc2"  // Microsoft Visual C++ Ïù¥Ïô∏Ïùò Îã§Î•∏ ÎèÑÍµ¨ÏóêÏÑú Ìé∏ÏßëÌïú Î¶¨ÏÜåÏä§ÏûÖÎãàÎã§.
+#include "l.KOR\afxres.rc"      // ÌëúÏ§Ä Íµ¨ÏÑ± ÏöîÏÜåÏûÖÎãàÎã§.
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
