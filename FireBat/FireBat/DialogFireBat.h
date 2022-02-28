@@ -1,32 +1,29 @@
-#pragma once
-#include "DialogSetRule.h"
-#include "DialogYesNoBox.h"
-#include "FireBatNIDS.h"
-#include "afxwin.h"
-#define UM_UPDATEDATA (WM_USER+1)
+﻿#pragma once
+#include "afxdialogex.h"
+
+
+// CDialogFireBat 대화 상자
 
 class CDialogFireBat : public CDialog
 {
 	DECLARE_DYNAMIC(CDialogFireBat)
 
 public:
-	CDialogFireBat(CWnd* pParent = NULL);
+	CDialogFireBat(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CDialogFireBat();
 
+// 대화 상자 데이터입니다.
+#ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_FIREBAT };
+#endif
 
 protected:
-	HICON m_hIcon;
-	virtual void DoDataExchange(CDataExchange* pDX);
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnBnClickedButtonStart();
+	afx_msg void OnBnClickedButtonStop();
+	// 화면 표시 문자열
 	CString m_strDisplay;
-public:
-	virtual BOOL OnInitDialog();
-	afx_msg void OnPaint();
-	afx_msg void OnBnClickedButtonClear();
-	afx_msg void OnBnClickedButtonSettingRules();
-	afx_msg void OnBnClickedButtonCaptureStart();
-	afx_msg void OnBnClickedButtonCaptureStop();
 };

@@ -1,14 +1,22 @@
-﻿#include "stdafx.h"
+﻿// DialogFireBat.cpp: 구현 파일
+//
+
+#include "stdafx.h"
 #include "FireBat.h"
+#include "afxdialogex.h"
 #include "DialogFireBat.h"
+#include "DialogDeviceSelect.h"
+
+
+// CDialogFireBat 대화 상자
 
 IMPLEMENT_DYNAMIC(CDialogFireBat, CDialog)
 
-CDialogFireBat::CDialogFireBat(CWnd* pParent /*=NULL*/)
-	: CDialog(CDialogFireBat::IDD, pParent)
+CDialogFireBat::CDialogFireBat(CWnd* pParent /*=nullptr*/)
+	: CDialog(IDD_DIALOG_FIREBAT, pParent)
 	, m_strDisplay(_T(""))
 {
-	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
 }
 
 CDialogFireBat::~CDialogFireBat()
@@ -18,78 +26,34 @@ CDialogFireBat::~CDialogFireBat()
 void CDialogFireBat::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_strDisplay);
+	DDX_Text(pDX, IDC_EDIT_DISPLAY, m_strDisplay);
 }
+
 
 BEGIN_MESSAGE_MAP(CDialogFireBat, CDialog)
-	ON_WM_PAINT()
-	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CDialogFireBat::OnBnClickedButtonClear)
-	ON_BN_CLICKED(IDC_BUTTON_SETTING_RULES, &CDialogFireBat::OnBnClickedButtonSettingRules)
-	ON_BN_CLICKED(IDC_BUTTON_CAPTURE_START, &CDialogFireBat::OnBnClickedButtonCaptureStart)
-	ON_BN_CLICKED(IDC_BUTTON_CAPTURE_STOP, &CDialogFireBat::OnBnClickedButtonCaptureStop)
+	ON_BN_CLICKED(IDC_BUTTON_START, &CDialogFireBat::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_BUTTON_STOP, &CDialogFireBat::OnBnClickedButtonStop)
 END_MESSAGE_MAP()
 
-BOOL CDialogFireBat::OnInitDialog()
-{
-	CDialog::OnInitDialog();
 
-	SetIcon(m_hIcon, TRUE);
-	SetIcon(m_hIcon, FALSE);
-	
-	UpdateData(FALSE);
-	return TRUE;  
-	
-}
+// CDialogFireBat 메시지 처리기
 
-void CDialogFireBat::OnPaint()
+
+void CDialogFireBat::OnBnClickedButtonStart()
 {
-	if (IsIconic())
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDialogDeviceSelect DlgDevSel;
+	int nResult = DlgDevSel.DoModal();
+	if (nResult == IDOK)
 	{
-		CPaintDC dc(this); 
 
-		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
-
-		
-		int cxIcon = GetSystemMetrics(SM_CXICON);
-		int cyIcon = GetSystemMetrics(SM_CYICON);
-		CRect rect;
-		GetClientRect(&rect);
-		int x = (rect.Width() - cxIcon + 1) / 2;
-		int y = (rect.Height() - cyIcon + 1) / 2;
-
-		
-		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
-	{
-		CDialog::OnPaint();
-	}
+		return;
 }
 
 
-
-void CDialogFireBat::OnBnClickedButtonCaptureStart()
+void CDialogFireBat::OnBnClickedButtonStop()
 {
-
-}
-
-void CDialogFireBat::OnBnClickedButtonCaptureStop()
-{
-
-}
-
-void CDialogFireBat::OnBnClickedButtonSettingRules()
-{
-	CDialogSetRule Dlg;
-	INT nDlgResult = Dlg.DoModal();
-
-	if(nDlgResult == IDOK)
-	{
-		
-	}
-}
-
-void CDialogFireBat::OnBnClickedButtonClear()
-{
-
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
