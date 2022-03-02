@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// í•œêµ­ì–´(ëŒ€í•œë¯¼êµ­) resources
+// ÇÑ±¹¾î(´ëÇÑ¹Î±¹) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -160,6 +160,7 @@ BEGIN
     DEFPUSHBUTTON   "¼±ÅÃ",IDOK,198,249,50,14,WS_DISABLED
     PUSHBUTTON      "Ãë¼Ò",IDCANCEL,252,249,50,14
     LISTBOX         IDC_LIST_DEVICE,7,7,295,237,LBS_SORT | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    EDITTEXT        IDC_EDIT_SELECT_TRANSPARENC,7,249,179,14,NOT WS_VISIBLE | WS_DISABLED
 END
 
 
@@ -181,7 +182,7 @@ BEGIN
     0
 END
 
-#endif    // í•œêµ­ì–´(ëŒ€í•œë¯¼êµ­) resources
+#endif    // ÇÑ±¹¾î(´ëÇÑ¹Î±¹) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
