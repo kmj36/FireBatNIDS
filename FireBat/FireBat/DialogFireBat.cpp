@@ -5,7 +5,6 @@
 #include "FireBat.h"
 #include "afxdialogex.h"
 #include "DialogFireBat.h"
-#include "DialogDeviceSelect.h"
 
 
 // CDialogFireBat 대화 상자
@@ -41,14 +40,14 @@ END_MESSAGE_MAP()
 
 void CDialogFireBat::OnBnClickedButtonStart()
 {
-	CDialogDeviceSelect DlgDevSel;
-	int nResult = DlgDevSel.DoModal();
-	if (nResult != IDOK)
+	int nResult = m_DlgDevSel.DoModal();
+	if (nResult == IDCANCEL)
 		return;
 
-	// TODO
-
-	delete DlgDevSel;
+	
+	int nResult2 = m_DlgRuleSet.DoModal();
+	if (nResult2 == IDCANCEL)
+		return;
 }
 
 

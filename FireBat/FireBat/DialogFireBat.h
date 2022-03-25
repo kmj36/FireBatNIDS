@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "afxdialogex.h"
+#include "DialogDeviceSelect.h"
+#include "DialogRuleSet.h"
 
 
 // CDialogFireBat 대화 상자
@@ -22,8 +24,13 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedButtonStart();
-	afx_msg void OnBnClickedButtonStop();
+	// 네트워크 인터페이스 디바이스 지정
+	CDialogDeviceSelect m_DlgDevSel;
+	// 패킷 탐지 규칙 지정
+	CDialogRuleSet m_DlgRuleSet;
 	// 화면 표시 문자열
 	CString m_strDisplay;
+public:
+	afx_msg void OnBnClickedButtonStart();
+	afx_msg void OnBnClickedButtonStop();
 };

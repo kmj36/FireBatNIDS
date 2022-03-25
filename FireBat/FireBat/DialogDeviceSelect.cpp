@@ -46,11 +46,13 @@ END_MESSAGE_MAP()
 BOOL CDialogDeviceSelect::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
-	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	
 	if (pcap_findalldevs(&m_alldevs, m_strErrBuf) == -1)
+	{
+		CString strErr(m_strErrBuf);
+		AfxMessageBox(strErr);
 		return TRUE;
+	}
 
 	CString strDeviceName;
 	CString strDescription;
@@ -71,7 +73,6 @@ BOOL CDialogDeviceSelect::OnInitDialog()
 
 void CDialogDeviceSelect::OnLbnSelchangeListDevice()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (m_ctrlDeviceList.GetCurSel() != LB_ERR)
 	{
 		m_ctrlDeviceList.GetText(m_ctrlDeviceList.GetCurSel(), m_strSelectedItem);
@@ -85,6 +86,5 @@ void CDialogDeviceSelect::OnLbnSelchangeListDevice()
 
 void CDialogDeviceSelect::OnLbnSelcancelListDevice()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	m_ctrlSelectButton.EnableWindow(FALSE);
 }

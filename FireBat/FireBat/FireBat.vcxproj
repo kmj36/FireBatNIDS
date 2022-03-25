@@ -116,6 +116,7 @@
   <ItemGroup>
     <ClCompile Include="DialogDeviceSelect.cpp" />
     <ClCompile Include="DialogFireBat.cpp" />
+    <ClCompile Include="DialogRuleSet.cpp" />
     <ClCompile Include="FireBat.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -125,6 +126,7 @@
   <ItemGroup>
     <ClInclude Include="DialogDeviceSelect.h" />
     <ClInclude Include="DialogFireBat.h" />
+    <ClInclude Include="DialogRuleSet.h" />
     <ClInclude Include="FireBat.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
