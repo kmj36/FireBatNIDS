@@ -22,8 +22,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	// 패킷에서 탐지할 값의 문자열, 16진수 여부
-	int m_Radio;
 	// 프로토콜 콤보 박스
 	CComboBox m_ctrlProtocolComboBox;
 	// 출발지 ip 컨트롤
@@ -34,6 +32,8 @@ public:
 	CIPAddressCtrl m_ctrlDestinationIP;
 	// 도착지 port 숫자값
 	UINT m_nDestinationPort;
+	// 패킷에서 탐지할 값의 문자열, 16진수 여부
+	int m_nRadio;
 	// 패킷에서 감지할 데이터
 	CString m_strAnalyzeData;
 public:
