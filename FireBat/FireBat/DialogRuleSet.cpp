@@ -13,12 +13,11 @@ IMPLEMENT_DYNAMIC(CDialogRuleSet, CDialog)
 
 CDialogRuleSet::CDialogRuleSet(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DIALOG_RULE_SET, pParent)
-	, m_nRadio(0)
 	, m_nSourcePort(0)
 	, m_nDestinationPort(0)
 	, m_strAnalyzeData(_T(""))
+	, m_strFilterRule(_T(""))
 {
-
 }
 
 CDialogRuleSet::~CDialogRuleSet()
@@ -28,7 +27,6 @@ CDialogRuleSet::~CDialogRuleSet()
 void CDialogRuleSet::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Radio(pDX, IDC_RADIO_RULE_STRING, m_nRadio);
 	DDX_Control(pDX, IDC_COMBO_RULE_PROTOCOL_SEL, m_ctrlProtocolComboBox);
 	DDX_Control(pDX, IDC_IPADDRESS_RULE_SOURCE_IP, m_ctrlSourceIP);
 	DDX_Text(pDX, IDC_EDIT_RULE_SOURCE_PORT, m_nSourcePort);
@@ -41,6 +39,7 @@ void CDialogRuleSet::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, IDC_EDIT_RULE_SOURCE_PORT, 0, USHORT_MAX);
 	DDV_MinMaxInt(pDX, IDC_EDIT_RULE_DESTINATION_PORT, 0, USHORT_MAX);
 	DDX_Text(pDX, IDC_EDIT_RULE_ANALYZE_VALUE, m_strAnalyzeData);
+	DDX_Control(pDX, IDC_LIST_RULE_LIST, m_ctrlRuleList);
 }
 
 
@@ -51,6 +50,11 @@ BEGIN_MESSAGE_MAP(CDialogRuleSet, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_RULE_DESTINATION_ANY_PORT, &CDialogRuleSet::OnBnClickedCheckRuleDestinationAnyPort)
 	ON_BN_CLICKED(IDC_BUTTON_RULE_APPLY, &CDialogRuleSet::OnBnClickedButtonRuleApply)
 	ON_BN_CLICKED(IDC_BUTTON_RULE_DELETE, &CDialogRuleSet::OnBnClickedButtonRuleDelete)
+	ON_BN_CLICKED(IDOK, &CDialogRuleSet::OnBnClickedOk)
+	ON_BN_CLICKED(IDC_BUTTON_RULE_IMPORT, &CDialogRuleSet::OnBnClickedButtonRuleImport)
+	ON_BN_CLICKED(IDC_BUTTON_RULE_EXPORT, &CDialogRuleSet::OnBnClickedButtonRuleExport)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_RULE_LIST_CHANGE_NUMBER, &CDialogRuleSet::OnDeltaposSpinRuleListChangeNumber)
+	ON_LBN_SELCHANGE(IDC_LIST_RULE_LIST, &CDialogRuleSet::OnLbnSelchangeListRuleList)
 END_MESSAGE_MAP()
 
 
@@ -115,49 +119,227 @@ void CDialogRuleSet::OnBnClickedCheckRuleDestinationAnyPort()
 }
 
 void CDialogRuleSet::OnBnClickedButtonRuleApply()
-{ 
+{
 	UpdateData(TRUE);
 
+	if (m_ctrlProtocolComboBox.GetCurSel() == LB_ERR)
+		return;
+
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CString strProtocol, strSrcIp, strSrcPort, strDstIp, strDstPort, strRadio;
-	if (m_ctrlProtocolComboBox.GetCurSel() != LB_ERR)
-		m_ctrlProtocolComboBox.GetLBText(m_ctrlProtocolComboBox.GetCurSel(), strProtocol);
+	CString strRule;
+	CString strProtocol, strSrcIp, strSrcPort, strDstIp, strDstPort;
+	bool bCheckActive = false;
 
-	GetDlgItemText(IDC_IPADDRESS_RULE_SOURCE_IP, strSrcIp);
+	m_ctrlProtocolComboBox.GetLBText(m_ctrlProtocolComboBox.GetCurSel(), strProtocol);
+
 	strSrcPort.Format(_T("%u"), m_nSourcePort);
-	GetDlgItemText(IDC_IPADDRESS_RULE_DESTINATION_IP, strDstIp);
 	strDstPort.Format(_T("%u"), m_nDestinationPort);
-	strRadio.Format(_T("%d"), m_nRadio);
+	GetDlgItemText(IDC_IPADDRESS_RULE_SOURCE_IP, strSrcIp);
+	GetDlgItemText(IDC_IPADDRESS_RULE_DESTINATION_IP, strDstIp);
 
-	AfxMessageBox(strProtocol);
+	strRule += strProtocol.MakeLower();
 
-	if (m_ctrlAnySrcIPCheckBox.GetCheck())
-		AfxMessageBox(_T("ALL"));
-	else
-		AfxMessageBox(strSrcIp);
+	if (strSrcIp != "0.0.0.0" && !m_ctrlAnySrcIPCheckBox.GetCheck())
+	{
+		strRule += _T(" src host ") + strSrcIp;
+		bCheckActive = true;
+	}
 
-	if (m_ctrlAnySrcPortCheckBox.GetCheck())
-		AfxMessageBox(_T("ALL"));
-	else
-		AfxMessageBox(strSrcPort);
+	if (strSrcPort != '0' && !m_ctrlAnySrcPortCheckBox.GetCheck())
+	{
+		if (bCheckActive)
+			strRule += _T(" and");
+		strRule += _T(" src port ") + strSrcPort;
+		bCheckActive = true;
+	}
 
-	if (m_ctrlAnyDstIPCheckBox.GetCheck())
-		AfxMessageBox(_T("ALL"));
-	else
-		AfxMessageBox(strDstIp);
+	if (strDstIp != "0.0.0.0" && !m_ctrlAnyDstIPCheckBox.GetCheck())
+	{
+		if (bCheckActive)
+			strRule += _T(" and");
+		strRule += _T(" dst host ") + strDstIp;
+		bCheckActive = true;
+	}
 
-	if (m_ctrlAnyDstPortCheckBox.GetCheck())
-		AfxMessageBox(_T("ALL"));
-	else
-		AfxMessageBox(strDstPort);
+	if (strDstPort != '0' && !m_ctrlAnyDstPortCheckBox.GetCheck())
+	{
+		if (bCheckActive)
+			strRule += _T(" and");
+		strRule += _T(" dst port ") + strDstPort;
+	}
 
-	AfxMessageBox(strRadio);
-	AfxMessageBox(m_strAnalyzeData);
+	if (!m_strAnalyzeData.IsEmpty())
+		strRule += _T("->") + m_strAnalyzeData;
+
+	if (m_ctrlRuleList.FindStringExact(-1, strRule) == LB_ERR)
+	{
+		m_ctrlRuleList.AddString(strRule);
+		m_vtAnalyzeDatas.push_back(m_strAnalyzeData);
+	}
 }
 
 
 void CDialogRuleSet::OnBnClickedButtonRuleDelete()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	
+	int nSelectIndex;
+	if ((nSelectIndex = m_ctrlRuleList.GetCurSel()) == LB_ERR)
+		return;
+
+	m_ctrlRuleList.DeleteString(nSelectIndex);
+	if (!m_vtAnalyzeDatas.empty())
+		m_vtAnalyzeDatas.erase(m_vtAnalyzeDatas.begin() + nSelectIndex);
+
+	m_ctrlRuleList.SetCurSel(nSelectIndex);
+}
+
+
+void CDialogRuleSet::OnBnClickedOk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDialog::OnOK();
+
+}
+
+
+void CDialogRuleSet::OnBnClickedButtonRuleImport()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CFileDialog dlg(true, _T("*.ini"), NULL, OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT, _T("INI Files(*.ini)|*.ini|"), NULL);
+
+	if (dlg.DoModal() != IDOK)
+		return;
+
+	CString strFilePath;
+	CStdioFile fileRule;
+	CFileException fileEx;
+
+	strFilePath = dlg.GetPathName();
+
+	if (fileRule.Open(strFilePath, CFile::modeReadWrite, &fileEx))
+	{
+		CString strReadData;
+		CString strAnalyzeData;
+		int i = 0;
+
+		m_ctrlRuleList.ResetContent();
+		m_vtAnalyzeDatas.clear();
+
+		while (fileRule.ReadString(strReadData))
+		{
+			int nPos = 0;
+			strReadData.Tokenize(_T("->"), nPos);
+			strAnalyzeData = strReadData.Tokenize(_T("->"), nPos);
+
+			if (m_ctrlRuleList.FindStringExact(-1, strReadData) == LB_ERR)
+			{
+				m_ctrlRuleList.InsertString(i, strReadData);
+				m_vtAnalyzeDatas.push_back(strAnalyzeData);
+				i++;
+			}
+		}
+
+		fileRule.Close();
+		UpdateData(FALSE);
+	}
+	else
+		AfxMessageBox(_T("파일을 열 수 없습니다. 에러 = %d\n"), fileEx.m_cause);
+}
+
+
+void CDialogRuleSet::OnBnClickedButtonRuleExport()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CFileDialog dlg(false, _T("*.ini"), NULL, OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT, _T("INI Files(*.ini)|*.ini|"), NULL);
+
+	if (dlg.DoModal() != IDOK)
+		return;
+
+	CString strFilePath;
+	CStdioFile fileRule;
+	CFileException fileEx;
+
+	strFilePath = dlg.GetPathName();
+
+	if (fileRule.Open(strFilePath, CFile::modeCreate | CFile::modeReadWrite, &fileEx))
+	{
+		UpdateData(TRUE);
+		CString strRuleValue;
+
+		for (int i = 0, len = m_ctrlRuleList.GetCount(); i < len; i++)
+		{
+			m_ctrlRuleList.GetText(i, strRuleValue);
+			fileRule.WriteString(strRuleValue + "\n");
+		}
+
+		fileRule.Close();
+		AfxMessageBox(strFilePath + _T(" 저장되었습니다."));
+	}
+	else
+		AfxMessageBox(_T("파일을 열 수 없습니다. 에러 = %d\n"), fileEx.m_cause);
+}
+
+
+void CDialogRuleSet::OnDeltaposSpinRuleListChangeNumber(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	int nSel = m_ctrlRuleList.GetCurSel();
+	int nCount = m_ctrlRuleList.GetCount();
+
+	if (nSel != LB_ERR)
+	{
+		CString strRuleTemp;
+		CString strvtTemp;
+
+		if (nCount == 1)
+			return;
+
+		if (pNMUpDown->iDelta < 0)
+		{
+			if (nSel == 0)
+				return;
+
+			m_ctrlRuleList.GetText(nSel, strRuleTemp);
+			m_ctrlRuleList.DeleteString(nSel); 
+			m_ctrlRuleList.InsertString(nSel - 1, strRuleTemp);
+
+			strvtTemp = m_vtAnalyzeDatas[nSel];
+			m_vtAnalyzeDatas[nSel] = m_vtAnalyzeDatas[nSel - 1];
+			m_vtAnalyzeDatas[nSel - 1] = strvtTemp;
+
+			m_ctrlRuleList.SetCurSel(nSel - 1);
+		}
+		else
+		{
+			if (nSel == nCount - 1)
+				return;
+
+			m_ctrlRuleList.GetText(nSel, strRuleTemp);
+			m_ctrlRuleList.DeleteString(nSel);
+			m_ctrlRuleList.InsertString(nSel + 1, strRuleTemp);
+
+			strvtTemp = m_vtAnalyzeDatas[nSel];
+			m_vtAnalyzeDatas[nSel] = m_vtAnalyzeDatas[nSel + 1];
+			m_vtAnalyzeDatas[nSel + 1] = strvtTemp;
+
+			m_ctrlRuleList.SetCurSel(nSel + 1);
+		}
+	}
+	*pResult = 0;
+}
+
+
+void CDialogRuleSet::OnLbnSelchangeListRuleList()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int nSel = m_ctrlRuleList.GetCurSel();
+	if (nSel != LB_ERR)
+	{
+		CString strSelData;
+
+		m_ctrlRuleList.GetText(nSel, strSelData);
+		AfxMessageBox(strSelData);
+	}
 }

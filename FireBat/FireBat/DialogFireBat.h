@@ -2,6 +2,7 @@
 #include "afxdialogex.h"
 #include "DialogDeviceSelect.h"
 #include "DialogRuleSet.h"
+#include <vector>
 
 
 // CDialogFireBat 대화 상자

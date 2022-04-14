@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-
+#include <vector>
 
 // CDialogRuleSet 대화 상자
 
@@ -32,8 +32,6 @@ public:
 	CIPAddressCtrl m_ctrlDestinationIP;
 	// 도착지 port 숫자값
 	UINT m_nDestinationPort;
-	// 패킷에서 탐지할 값의 문자열, 16진수 여부
-	int m_nRadio;
 	// 패킷에서 감지할 데이터
 	CString m_strAnalyzeData;
 public:
@@ -46,6 +44,13 @@ public:
 	// 모든 도착지 포트 체크박스 컨트롤
 	CButton m_ctrlAnyDstPortCheckBox;
 public:
+	// 규칙 전체 문자열
+	CString m_strFilterRule;
+	// 감지할 데이터 벡터
+	std::vector<CString> m_vtAnalyzeDatas;
+	// 필터 규칙 리스트박스
+	CListBox m_ctrlRuleList;
+public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCheckRuleSourceAnyIp();
 	afx_msg void OnBnClickedCheckRuleSourceAnyPort();
@@ -53,4 +58,9 @@ public:
 	afx_msg void OnBnClickedCheckRuleDestinationAnyPort();
 	afx_msg void OnBnClickedButtonRuleApply();
 	afx_msg void OnBnClickedButtonRuleDelete();
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedButtonRuleImport();
+	afx_msg void OnBnClickedButtonRuleExport();
+	afx_msg void OnDeltaposSpinRuleListChangeNumber(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnLbnSelchangeListRuleList();
 };
