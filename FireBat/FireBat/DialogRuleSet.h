@@ -50,6 +50,8 @@ public:
 	std::vector<CString> m_vtAnalyzeDatas;
 	// 필터 규칙 리스트박스
 	CListBox m_ctrlRuleList;
+	// 가로 스크롤 조정
+	void SetLbVScrollLength();
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCheckRuleSourceAnyIp();
@@ -63,4 +65,5 @@ public:
 	afx_msg void OnBnClickedButtonRuleExport();
 	afx_msg void OnDeltaposSpinRuleListChangeNumber(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnLbnSelchangeListRuleList();
+	afx_msg void OnBnClickedButtonTest();
 };

@@ -55,6 +55,7 @@ BEGIN_MESSAGE_MAP(CDialogRuleSet, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_RULE_EXPORT, &CDialogRuleSet::OnBnClickedButtonRuleExport)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_RULE_LIST_CHANGE_NUMBER, &CDialogRuleSet::OnDeltaposSpinRuleListChangeNumber)
 	ON_LBN_SELCHANGE(IDC_LIST_RULE_LIST, &CDialogRuleSet::OnLbnSelchangeListRuleList)
+	ON_BN_CLICKED(IDC_BUTTON_TEST, &CDialogRuleSet::OnBnClickedButtonTest)
 END_MESSAGE_MAP()
 
 
@@ -175,6 +176,7 @@ void CDialogRuleSet::OnBnClickedButtonRuleApply()
 	{
 		m_ctrlRuleList.AddString(strRule);
 		m_vtAnalyzeDatas.push_back(m_strAnalyzeData);
+		SetLbVScrollLength();
 	}
 }
 
@@ -191,6 +193,7 @@ void CDialogRuleSet::OnBnClickedButtonRuleDelete()
 		m_vtAnalyzeDatas.erase(m_vtAnalyzeDatas.begin() + nSelectIndex);
 
 	m_ctrlRuleList.SetCurSel(nSelectIndex);
+	SetLbVScrollLength();
 }
 
 
@@ -227,20 +230,26 @@ void CDialogRuleSet::OnBnClickedButtonRuleImport()
 
 		while (fileRule.ReadString(strReadData))
 		{
-			int nPos = 0;
-			strReadData.Tokenize(_T("->"), nPos);
-			strAnalyzeData = strReadData.Tokenize(_T("->"), nPos);
+			if (m_ctrlRuleList.FindStringExact(-1, strReadData) != LB_ERR)
+				continue;
 
-			if (m_ctrlRuleList.FindStringExact(-1, strReadData) == LB_ERR)
+			int tokenindex = strReadData.Find(_T("->"));
+			m_ctrlRuleList.InsertString(i, strReadData);
+
+			if (tokenindex == -1)
+				m_vtAnalyzeDatas.push_back(_T(""));
+			else
 			{
-				m_ctrlRuleList.InsertString(i, strReadData);
+				strAnalyzeData = strReadData.Mid(tokenindex + 2);
 				m_vtAnalyzeDatas.push_back(strAnalyzeData);
-				i++;
 			}
+
+			i++;
 		}
 
 		fileRule.Close();
 		UpdateData(FALSE);
+		SetLbVScrollLength();
 	}
 	else
 		AfxMessageBox(_T("파일을 열 수 없습니다. 에러 = %d\n"), fileEx.m_cause);
@@ -287,6 +296,7 @@ void CDialogRuleSet::OnDeltaposSpinRuleListChangeNumber(NMHDR* pNMHDR, LRESULT* 
 	UpdateData(TRUE);
 	int nSel = m_ctrlRuleList.GetCurSel();
 	int nCount = m_ctrlRuleList.GetCount();
+	int move;
 
 	if (nSel != LB_ERR)
 	{
@@ -300,32 +310,24 @@ void CDialogRuleSet::OnDeltaposSpinRuleListChangeNumber(NMHDR* pNMHDR, LRESULT* 
 		{
 			if (nSel == 0)
 				return;
-
-			m_ctrlRuleList.GetText(nSel, strRuleTemp);
-			m_ctrlRuleList.DeleteString(nSel); 
-			m_ctrlRuleList.InsertString(nSel - 1, strRuleTemp);
-
-			strvtTemp = m_vtAnalyzeDatas[nSel];
-			m_vtAnalyzeDatas[nSel] = m_vtAnalyzeDatas[nSel - 1];
-			m_vtAnalyzeDatas[nSel - 1] = strvtTemp;
-
-			m_ctrlRuleList.SetCurSel(nSel - 1);
+			move = -1;
 		}
 		else
 		{
 			if (nSel == nCount - 1)
 				return;
-
-			m_ctrlRuleList.GetText(nSel, strRuleTemp);
-			m_ctrlRuleList.DeleteString(nSel);
-			m_ctrlRuleList.InsertString(nSel + 1, strRuleTemp);
-
-			strvtTemp = m_vtAnalyzeDatas[nSel];
-			m_vtAnalyzeDatas[nSel] = m_vtAnalyzeDatas[nSel + 1];
-			m_vtAnalyzeDatas[nSel + 1] = strvtTemp;
-
-			m_ctrlRuleList.SetCurSel(nSel + 1);
+			move = 1;
 		}
+
+		m_ctrlRuleList.GetText(nSel, strRuleTemp);
+		m_ctrlRuleList.DeleteString(nSel);
+		m_ctrlRuleList.InsertString(nSel + move, strRuleTemp);
+
+		strvtTemp = m_vtAnalyzeDatas[nSel];
+		m_vtAnalyzeDatas[nSel] = m_vtAnalyzeDatas[nSel + move];
+		m_vtAnalyzeDatas[nSel + move] = strvtTemp;
+
+		m_ctrlRuleList.SetCurSel(nSel + move);
 	}
 	*pResult = 0;
 }
@@ -337,9 +339,88 @@ void CDialogRuleSet::OnLbnSelchangeListRuleList()
 	int nSel = m_ctrlRuleList.GetCurSel();
 	if (nSel != LB_ERR)
 	{
+		int nPos = 0;
 		CString strSelData;
+		CString strRule;
+		CString strToken;
 
 		m_ctrlRuleList.GetText(nSel, strSelData);
-		AfxMessageBox(strSelData);
+		strRule = strSelData.Tokenize(_T("->"), nPos);
+		nPos = 0;
+
+		m_ctrlSourceIP.ClearAddress(); // 초기화
+		m_nSourcePort = 0;
+		m_ctrlDestinationIP.ClearAddress();
+		m_nDestinationPort = 0;
+		m_strAnalyzeData = _T("");
+
+		m_ctrlProtocolComboBox.SetCurSel(m_ctrlProtocolComboBox.FindString(0, strRule.Tokenize(_T(" "), nPos))); // 프로토콜
+
+		while ((strToken = strRule.Tokenize(_T(" "), nPos)) != _T("")) // ip, port
+		{
+			if (strToken == _T("src"))
+			{
+				strToken = strRule.Tokenize(_T(" "), nPos);
+				if (strToken == _T("host"))
+				{
+					strToken = strRule.Tokenize(_T(" "), nPos);
+					m_ctrlSourceIP.SetWindowText(strToken);
+				}
+				else // port
+				{
+					strToken = strRule.Tokenize(_T(" "), nPos);
+					m_nSourcePort = _ttoi(strToken);
+				}
+			}
+
+			if (strToken == _T("dst"))
+			{
+				strToken = strRule.Tokenize(_T(" "), nPos);
+				if (strToken == _T("host"))
+				{
+					strToken = strRule.Tokenize(_T(" "), nPos);
+					m_ctrlDestinationIP.SetWindowText(strToken);
+				}
+				else // port
+				{
+					strToken = strRule.Tokenize(_T(" "), nPos);
+					m_nDestinationPort = _ttoi(strToken);
+				}
+			}
+		}
+
+		int tokenindex = strSelData.Find(_T("->")); // 데이터
+		if(tokenindex != -1)
+			m_strAnalyzeData = strSelData.Mid(tokenindex + 2);
+
+		UpdateData(FALSE);
 	}
+}
+
+
+void CDialogRuleSet::OnBnClickedButtonTest()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	for (int i = 0, len = m_vtAnalyzeDatas.size(); i < len; i++)
+		AfxMessageBox(m_vtAnalyzeDatas[i]);
+}
+
+void CDialogRuleSet::SetLbVScrollLength()
+{
+	CString str;
+	CSize sz;
+	CDC* pDC = m_ctrlRuleList.GetDC();
+	int dx = 0;
+
+	for (int i = 0, len = m_ctrlRuleList.GetCount(); i < len; i++)
+	{
+		m_ctrlRuleList.GetText(i, str);
+		sz = pDC->GetTextExtent(str);
+
+		if (sz.cx > dx)
+			dx = sz.cx;
+	}
+	m_ctrlRuleList.ReleaseDC(pDC);
+
+	m_ctrlRuleList.SetHorizontalExtent(dx);
 }

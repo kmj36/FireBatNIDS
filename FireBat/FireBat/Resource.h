@@ -45,7 +45,7 @@
 #define IDC_BUTTON_RULE_APPLY           1068
 #define IDC_SPIN_RULE_LIST_CHANGE_NUMBER 1070
 #define IDC_BUTTON3                     1073
-#define IDC_LIST2                       1075
+#define IDC_BUTTON_TEST                 1073
 
 // Next default values for new objects
 // 
