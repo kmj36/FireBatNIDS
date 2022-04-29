@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-#include <pcap.h>
 
 // CDialogDeviceSelect 대화 상자
 

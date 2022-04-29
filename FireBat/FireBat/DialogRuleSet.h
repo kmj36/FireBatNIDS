@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-#include <vector>
 
 // CDialogRuleSet 대화 상자
 
@@ -65,5 +64,4 @@ public:
 	afx_msg void OnBnClickedButtonRuleExport();
 	afx_msg void OnDeltaposSpinRuleListChangeNumber(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnLbnSelchangeListRuleList();
-	afx_msg void OnBnClickedButtonTest();
 };

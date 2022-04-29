@@ -55,7 +55,6 @@ BEGIN_MESSAGE_MAP(CDialogRuleSet, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_RULE_EXPORT, &CDialogRuleSet::OnBnClickedButtonRuleExport)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_RULE_LIST_CHANGE_NUMBER, &CDialogRuleSet::OnDeltaposSpinRuleListChangeNumber)
 	ON_LBN_SELCHANGE(IDC_LIST_RULE_LIST, &CDialogRuleSet::OnLbnSelchangeListRuleList)
-	ON_BN_CLICKED(IDC_BUTTON_TEST, &CDialogRuleSet::OnBnClickedButtonTest)
 END_MESSAGE_MAP()
 
 
@@ -200,8 +199,20 @@ void CDialogRuleSet::OnBnClickedButtonRuleDelete()
 void CDialogRuleSet::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDialog::OnOK();
+	CString strTemp;
 
+	for (int i = 0, len = m_ctrlRuleList.GetCount(); i < len; i++)
+	{
+		m_ctrlRuleList.GetText(i, strTemp);
+		m_strFilterRule += strTemp;
+		
+		if (i + 1 == len)
+			continue;
+
+		m_strFilterRule += " or ";
+	}
+
+	CDialog::OnOK();
 }
 
 
@@ -395,14 +406,6 @@ void CDialogRuleSet::OnLbnSelchangeListRuleList()
 
 		UpdateData(FALSE);
 	}
-}
-
-
-void CDialogRuleSet::OnBnClickedButtonTest()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	for (int i = 0, len = m_vtAnalyzeDatas.size(); i < len; i++)
-		AfxMessageBox(m_vtAnalyzeDatas[i]);
 }
 
 void CDialogRuleSet::SetLbVScrollLength()

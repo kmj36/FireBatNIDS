@@ -13,9 +13,11 @@ IMPLEMENT_DYNAMIC(CDialogFireBat, CDialog)
 
 CDialogFireBat::CDialogFireBat(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DIALOG_FIREBAT, pParent)
-	, m_strDisplay(_T(""))
+	, m_hPcap(NULL)
+	, m_pThread(NULL)
+	, m_lpszErrbuf("")
+	, m_CS()
 {
-
 }
 
 CDialogFireBat::~CDialogFireBat()
@@ -25,13 +27,14 @@ CDialogFireBat::~CDialogFireBat()
 void CDialogFireBat::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_DISPLAY, m_strDisplay);
+	DDX_Control(pDX, IDC_EDIT_DISPLAY, m_ctrlLoggingOut);
 }
 
 
 BEGIN_MESSAGE_MAP(CDialogFireBat, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CDialogFireBat::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CDialogFireBat::OnBnClickedButtonStop)
+	ON_MESSAGE(CUSTOM_UPDATEDATA, &CDialogFireBat::CustomMessageFromThread)
 END_MESSAGE_MAP()
 
 
@@ -40,18 +43,85 @@ END_MESSAGE_MAP()
 
 void CDialogFireBat::OnBnClickedButtonStart()
 {
-	int nResult = m_DlgDevSel.DoModal();
-	if (nResult == IDCANCEL)
+	if (m_pThread)
+	{
+		AfxMessageBox(_T("FireBatNIDS 이(가) 실행 중입니다."));
+		return;
+	}
+
+	if (m_DlgDevSel.DoModal() == IDCANCEL)
 		return;
 
-	
-	int nResult2 = m_DlgRuleSet.DoModal();
-	if (nResult2 == IDCANCEL)
+	if (m_DlgRuleSet.DoModal() == IDCANCEL)
 		return;
+
+	m_pThread = AfxBeginThread(CaptureThreadFunc, (LPVOID)this);
+	if (m_pThread == NULL)
+		AfxMessageBox(_T("시작하지 못했습니다."));
 }
 
+UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
+{
+	CDialogFireBat* PThis = (CDialogFireBat*)lpParam;
+
+	PThis->m_CS.Lock();
+	
+	if ((PThis->m_hPcap = pcap_open_live(
+		(CStringA)PThis->m_DlgDevSel.m_strDeviceID,
+		65536,
+		1,
+		1000,
+		PThis->m_lpszErrbuf)) == NULL)
+	{
+		AfxMessageBox(_T("디바이스를 열 수 없습니다."));
+		return -1;
+	}
+
+	if ((pcap_compile(PThis->m_hPcap,
+		&PThis->m_fcode,
+		(CStringA)PThis->m_DlgRuleSet.m_strFilterRule,
+		1,
+		PCAP_NETMASK_UNKNOWN)) < 0)
+	{
+		AfxMessageBox(_T("규칙을 설정하는 과정에서 오류가 발생했습니다."));
+		return -1;
+	}
+
+	if ((pcap_setfilter(PThis->m_hPcap, &PThis->m_fcode)) < 0)
+	{
+		AfxMessageBox(_T("규칙을 적용하는 과정에서 오류가 발생했습니다."));
+		return -1;
+	}
+
+	pcap_loop(PThis->m_hPcap, 0, packet_handler, (u_char*)PThis);
+
+	pcap_close(PThis->m_hPcap);
+	pcap_freecode(&PThis->m_fcode);
+	PThis->m_pThread = NULL;
+
+	PThis->m_CS.Unlock();
+	return 0;
+}
+
+void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* header, const u_char* pkt_data)
+{
+	CDialogFireBat* TThis = (CDialogFireBat*)param;
+	CString temp;
+	temp.Format(_T("%p\r\n"), pkt_data);
+
+	int len = TThis->m_ctrlLoggingOut.GetWindowTextLength();
+	TThis->m_ctrlLoggingOut.SetSel(len, len);
+	TThis->m_ctrlLoggingOut.ReplaceSel(temp);
+}
 
 void CDialogFireBat::OnBnClickedButtonStop()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+}
+
+LRESULT CDialogFireBat::CustomMessageFromThread(WPARAM wParam, LPARAM lParam)
+{
+	UpdateData(FALSE);
+	return 0;
 }
