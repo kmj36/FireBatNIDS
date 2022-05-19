@@ -36,6 +36,7 @@
 #define IDC_EDIT_RULE_ANALYZE_VALUE     1056
 #define IDC_BUTTON1                     1057
 #define IDC_BUTTON_RULE_IMPORT          1057
+#define IDC_BUTTON_PAUSE                1057
 #define IDC_BUTTON2                     1058
 #define IDC_BUTTON_RULE_EXPORT          1058
 #define IDC_CHECK5                      1061

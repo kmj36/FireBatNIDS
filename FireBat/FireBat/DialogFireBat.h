@@ -2,7 +2,6 @@
 #include "afxdialogex.h"
 #include "DialogDeviceSelect.h"
 #include "DialogRuleSet.h"
-#define CUSTOM_UPDATEDATA WM_USER
 
 // CDialogFireBat 대화 상자
 
@@ -46,8 +45,16 @@ public:
 	CWinThread * m_pThread;
 	// 크리티컬 섹션
 	CCriticalSection m_CS;
+	// 스레드 제어 변수
+	int m_ThreadStatus;
+	// 스레드 상태
+	enum Status {
+		THREAD_RUNNING,
+		THREAD_PAUSE,
+		THREAD_STOP
+	};
 public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
-	afx_msg LRESULT CustomMessageFromThread(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBnClickedButtonPause();
 };

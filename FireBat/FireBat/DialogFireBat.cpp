@@ -17,6 +17,7 @@ CDialogFireBat::CDialogFireBat(CWnd* pParent /*=nullptr*/)
 	, m_pThread(NULL)
 	, m_lpszErrbuf("")
 	, m_CS()
+	, m_ThreadStatus(THREAD_STOP)
 {
 }
 
@@ -34,7 +35,7 @@ void CDialogFireBat::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDialogFireBat, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CDialogFireBat::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CDialogFireBat::OnBnClickedButtonStop)
-	ON_MESSAGE(CUSTOM_UPDATEDATA, &CDialogFireBat::CustomMessageFromThread)
+	ON_BN_CLICKED(IDC_BUTTON_PAUSE, &CDialogFireBat::OnBnClickedButtonPause)
 END_MESSAGE_MAP()
 
 
@@ -55,9 +56,16 @@ void CDialogFireBat::OnBnClickedButtonStart()
 	if (m_DlgRuleSet.DoModal() == IDCANCEL)
 		return;
 
+	m_ctrlLoggingOut.SetWindowText(_T(""));
+
+	m_ThreadStatus = THREAD_RUNNING;
 	m_pThread = AfxBeginThread(CaptureThreadFunc, (LPVOID)this);
 	if (m_pThread == NULL)
+	{
 		AfxMessageBox(_T("시작하지 못했습니다."));
+		m_ThreadStatus = THREAD_STOP;
+	}
+	
 }
 
 UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
@@ -106,22 +114,48 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* header, const u_char* pkt_data)
 {
 	CDialogFireBat* TThis = (CDialogFireBat*)param;
-	CString temp;
-	temp.Format(_T("%p\r\n"), pkt_data);
+	int len;
+	CString strResult;
 
-	int len = TThis->m_ctrlLoggingOut.GetWindowTextLength();
+	hdr_t pkth = PacketAnalyzing(pkt_data);
+	PrintPacketData(pkth, strResult); // TODO
+
+	len = TThis->m_ctrlLoggingOut.GetWindowTextLength();
 	TThis->m_ctrlLoggingOut.SetSel(len, len);
-	TThis->m_ctrlLoggingOut.ReplaceSel(temp);
+
+	if (TThis->m_ThreadStatus == THREAD_STOP)
+	{
+		TThis->m_ctrlLoggingOut.ReplaceSel(_T("[TERMINATED]\r\n"));
+		pcap_breakloop(TThis->m_hPcap);
+	}
+
+	if (TThis->m_ThreadStatus == THREAD_PAUSE)
+	{
+		TThis->m_ctrlLoggingOut.ReplaceSel(_T("[PAUSE]\r\n"));
+		while (TThis->m_ThreadStatus == THREAD_PAUSE);
+	}
+
+	TThis->m_ctrlLoggingOut.ReplaceSel(strResult);
 }
 
 void CDialogFireBat::OnBnClickedButtonStop()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
+	m_ThreadStatus = THREAD_STOP;
 }
 
-LRESULT CDialogFireBat::CustomMessageFromThread(WPARAM wParam, LPARAM lParam)
+void CDialogFireBat::OnBnClickedButtonPause()
 {
-	UpdateData(FALSE);
-	return 0;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_ThreadStatus == THREAD_PAUSE)
+	{
+		m_ThreadStatus = THREAD_RUNNING;
+		return;
+	}
+
+	if (m_ThreadStatus == THREAD_RUNNING)
+	{
+		m_ThreadStatus = THREAD_PAUSE;
+		return;
+	}
 }
