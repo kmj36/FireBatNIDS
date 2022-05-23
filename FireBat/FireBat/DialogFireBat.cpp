@@ -82,6 +82,9 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 		PThis->m_lpszErrbuf)) == NULL)
 	{
 		AfxMessageBox(_T("디바이스를 열 수 없습니다."));
+		PThis->m_ThreadStatus = THREAD_STOP;
+		PThis->m_pThread = NULL;
+		PThis->m_CS.Unlock();
 		return -1;
 	}
 
@@ -92,12 +95,18 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 		PCAP_NETMASK_UNKNOWN)) < 0)
 	{
 		AfxMessageBox(_T("규칙을 설정하는 과정에서 오류가 발생했습니다."));
+		PThis->m_ThreadStatus = THREAD_STOP;
+		PThis->m_pThread = NULL;
+		PThis->m_CS.Unlock();
 		return -1;
 	}
 
 	if ((pcap_setfilter(PThis->m_hPcap, &PThis->m_fcode)) < 0)
 	{
 		AfxMessageBox(_T("규칙을 적용하는 과정에서 오류가 발생했습니다."));
+		PThis->m_ThreadStatus = THREAD_STOP;
+		PThis->m_pThread = NULL;
+		PThis->m_CS.Unlock();
 		return -1;
 	}
 
@@ -118,7 +127,7 @@ void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* hea
 	CString strResult;
 
 	hdr_t pkth = PacketAnalyzing(pkt_data);
-	PrintPacketData(pkth, strResult); // TODO
+	PrintPacketData(pkth, strResult);
 
 	len = TThis->m_ctrlLoggingOut.GetWindowTextLength();
 	TThis->m_ctrlLoggingOut.SetSel(len, len);
