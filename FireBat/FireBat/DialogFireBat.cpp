@@ -18,6 +18,7 @@ CDialogFireBat::CDialogFireBat(CWnd* pParent /*=nullptr*/)
 	, m_lpszErrbuf("")
 	, m_CS()
 	, m_ThreadStatus(THREAD_STOP)
+	, m_index(0)
 {
 }
 
@@ -28,7 +29,8 @@ CDialogFireBat::~CDialogFireBat()
 void CDialogFireBat::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT_DISPLAY, m_ctrlLoggingOut);
+	DDX_Control(pDX, IDC_LIST_LOGTEXT, m_ctrlListLogText);
+	DDX_Control(pDX, IDC_STATE, m_ctrlStaticStateText);
 }
 
 
@@ -41,8 +43,22 @@ END_MESSAGE_MAP()
 
 // CDialogFireBat 메시지 처리기
 
+BOOL CDialogFireBat::OnInitDialog()
+{
+	CDialog::OnInitDialog();
 
-void CDialogFireBat::OnBnClickedButtonStart()
+	m_ctrlListLogText.InsertColumn(0, _T("순서"), LVCFMT_LEFT, 40);
+	m_ctrlListLogText.InsertColumn(1, _T("프로토콜"), LVCFMT_LEFT, 80);
+	m_ctrlListLogText.InsertColumn(2, _T("출발지"), LVCFMT_LEFT, 120);
+	m_ctrlListLogText.InsertColumn(3, _T("도착지"), LVCFMT_LEFT, 120);
+	m_ctrlListLogText.InsertColumn(4, _T("정보"), LVCFMT_LEFT, 380);
+	m_ctrlListLogText.InsertColumn(5, _T("데이터"), LVCFMT_LEFT, 0);
+
+	m_ctrlStaticStateText.SetWindowText(_T("상태: 중지"));
+	return TRUE;
+}
+
+void CDialogFireBat::OnBnClickedButtonStart() // TODO : pcap 파일 저장 위치 사용자에게 입력받기
 {
 	if (m_pThread)
 	{
@@ -59,7 +75,8 @@ void CDialogFireBat::OnBnClickedButtonStart()
 	if (m_DlgRuleSet->DoModal() == IDCANCEL)
 		return;
 
-	m_ctrlLoggingOut.SetWindowText(_T(""));
+	m_ctrlListLogText.DeleteAllItems();
+	m_index = 0;
 
 	m_ThreadStatus = THREAD_RUNNING;
 	m_pThread = AfxBeginThread(CaptureThreadFunc, (LPVOID)this);
@@ -67,10 +84,12 @@ void CDialogFireBat::OnBnClickedButtonStart()
 	{
 		AfxMessageBox(_T("시작하지 못했습니다."));
 		m_ThreadStatus = THREAD_STOP;
-	}
+		m_ctrlStaticStateText.SetWindowText(_T("상태: 중지"));
+	}else
+		m_ctrlStaticStateText.SetWindowText(_T("상태: 동작중."));
 }
 
-UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam) // [TODO] : 코드 최적화
+UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 {
 	CDialogFireBat* PThis = (CDialogFireBat*)lpParam;
 	bool bIsError = false;
@@ -117,34 +136,143 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam) // [TODO] : 코드 최적
 	return 0;
 }
 
-void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* header, const u_char* pkt_data) // TODO: 출력 버그
+void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* header, const u_char* pkt_data)
 {
 	CDialogFireBat* TThis = (CDialogFireBat*)param;
-	int len;
-	CString strResult;
+	CString strResult, strIndex, strSrc, strDst, strInfo, strPacket;
+	strIndex.Format(_T("%u"), TThis->m_index + 1);
 
 	hdr_t pkth = PacketAnalyzing(pkt_data);
-	PrintPacketData(pkth, strResult);
+	
+	TThis->m_ctrlListLogText.InsertItem(TThis->m_index, strIndex);
+	/*
 
-	len = TThis->m_ctrlLoggingOut.GetWindowTextLength();
-	TThis->m_ctrlLoggingOut.SetSel(len, len);
-	TThis->m_ctrlLoggingOut.ReplaceSel(strResult);
+	switch(pkth.type)
+	{
+		case ARP:
+			TThis->m_ctrlListLogText.SetItem(TThis->m_index, 1, LVIF_TEXT, _T("ARP"), NULL, NULL, NULL, NULL);
+			break;
+
+		case IPV4_TCP:
+		case IPV6_TCP:
+			TThis->m_ctrlListLogText.SetItem(TThis->m_index, 1, LVIF_TEXT, _T("TCP"), NULL, NULL, NULL, NULL);
+			break;
+
+		case IPV4_UDP:
+		case IPV6_UDP:
+			TThis->m_ctrlListLogText.SetItem(TThis->m_index, 1, LVIF_TEXT, _T("UDP"), NULL, NULL, NULL, NULL);
+			break;
+
+		case IPV4_TCP_ICMP:
+			TThis->m_ctrlListLogText.SetItem(TThis->m_index, 1, LVIF_TEXT, _T("ICMP"), NULL, NULL, NULL, NULL);
+			break;
+
+		case IPV6_TCP_ICMP:
+			TThis->m_ctrlListLogText.SetItem(TThis->m_index, 1, LVIF_TEXT, _T("ICMPv6"), NULL, NULL, NULL, NULL);
+			break;
+	}
+
+	switch(pkth.type)
+	{
+	case ARP:
+		strSrc.Format(_T("%02X:%02X:%02X:%02X:%02X:%02X"),
+			pkth.eth->eth_src_mac[0],
+			pkth.eth->eth_src_mac[1],
+			pkth.eth->eth_src_mac[2],
+			pkth.eth->eth_src_mac[3],
+			pkth.eth->eth_src_mac[4],
+			pkth.eth->eth_src_mac[5]);
+
+		strDst.Format(_T("%02X:%02X:%02X:%02X:%02X:%02X"),
+			pkth.eth->eth_dst_mac[0],
+			pkth.eth->eth_dst_mac[1],
+			pkth.eth->eth_dst_mac[2],
+			pkth.eth->eth_dst_mac[3],
+			pkth.eth->eth_dst_mac[4],
+			pkth.eth->eth_dst_mac[5]);
+
+		TThis->m_ctrlListLogText.SetItem(TThis->m_index, 2, LVIF_TEXT, strSrc, NULL, NULL, NULL, NULL);
+		TThis->m_ctrlListLogText.SetItem(TThis->m_index, 3, LVIF_TEXT, strDst, NULL, NULL, NULL, NULL);
+		break;
+
+	case IPV4_TCP:
+	case IPV4_UDP:
+	case IPV4_TCP_ICMP:
+		strSrc.Format(_T("%0d.%0d.%0d.%0d"),
+			pkth.ip4h->ip4_src_ip[0],
+			pkth.ip4h->ip4_src_ip[1],
+			pkth.ip4h->ip4_src_ip[2],
+			pkth.ip4h->ip4_src_ip[3]);
+
+		strDst.Format(_T("%0d.%0d.%0d.%0d"),
+			pkth.ip4h->ip4_dst_ip[0],
+			pkth.ip4h->ip4_dst_ip[1],
+			pkth.ip4h->ip4_dst_ip[2],
+			pkth.ip4h->ip4_dst_ip[3]);
+
+		TThis->m_ctrlListLogText.SetItem(TThis->m_index, 2, LVIF_TEXT, strSrc, NULL, NULL, NULL, NULL);
+		TThis->m_ctrlListLogText.SetItem(TThis->m_index, 3, LVIF_TEXT, strDst, NULL, NULL, NULL, NULL);
+		break;
+
+	case IPV6_TCP:
+	case IPV6_UDP:
+	case IPV6_TCP_ICMP:
+		strSrc.Format(_T("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x"),
+			ntohs(pkth.ip6h->ip6_src_ip[0]),
+			ntohs(pkth.ip6h->ip6_src_ip[1]),
+			ntohs(pkth.ip6h->ip6_src_ip[2]),
+			ntohs(pkth.ip6h->ip6_src_ip[3]),
+			ntohs(pkth.ip6h->ip6_src_ip[4]),
+			ntohs(pkth.ip6h->ip6_src_ip[5]),
+			ntohs(pkth.ip6h->ip6_src_ip[6]),
+			ntohs(pkth.ip6h->ip6_src_ip[7]));
+
+		strDst.Format(_T("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x"),
+			ntohs(pkth.ip6h->ip6_dst_ip[0]),
+			ntohs(pkth.ip6h->ip6_dst_ip[1]),
+			ntohs(pkth.ip6h->ip6_dst_ip[2]),
+			ntohs(pkth.ip6h->ip6_dst_ip[3]),
+			ntohs(pkth.ip6h->ip6_dst_ip[4]),
+			ntohs(pkth.ip6h->ip6_dst_ip[5]),
+			ntohs(pkth.ip6h->ip6_dst_ip[6]),
+			ntohs(pkth.ip6h->ip6_dst_ip[7]));
+
+		TThis->m_ctrlListLogText.SetItem(TThis->m_index, 2, LVIF_TEXT, strSrc, NULL, NULL, NULL, NULL);
+		TThis->m_ctrlListLogText.SetItem(TThis->m_index, 3, LVIF_TEXT, strDst, NULL, NULL, NULL, NULL);
+		break;
+	}
+
+	// TODO : 프로토콜별 정보 출력
+	switch (pkth.type)
+	{
+	case ARP:
+	case IPV4_TCP:
+	case IPV4_UDP:
+	case IPV4_TCP_ICMP:
+	case IPV6_TCP:
+	case IPV6_UDP:
+	case IPV6_TCP_ICMP:
+		break;
+	}
+
+	for (short i = 0; i < header->len; i++)
+		strPacket.AppendFormat(_T("%02X"), pkt_data[i]); 
+	TThis->m_ctrlListLogText.SetItem(TThis->m_index, 5, LVIF_TEXT, strPacket, NULL, NULL, NULL, NULL);
+	*/ // 변경될 가능성이 높은 코드
+
+	TThis->m_index++;
 
 	if (TThis->m_ThreadStatus == THREAD_PAUSE)
-	{
-		TThis->m_ctrlLoggingOut.ReplaceSel(_T("[PAUSE]\r\n"));
 		while (TThis->m_ThreadStatus == THREAD_PAUSE);
-	}
 }
 
 void CDialogFireBat::OnBnClickedButtonStop()
 {
-	// : 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (m_ThreadStatus == THREAD_STOP)
 		return;
 
 	m_ThreadStatus = THREAD_STOP;
-	m_ctrlLoggingOut.ReplaceSel(_T("[TERMINATED]\r\n"));
+	m_ctrlStaticStateText.SetWindowText(_T("상태: 중지"));
 	pcap_breakloop(m_hPcap);
 }
 
@@ -153,12 +281,14 @@ void CDialogFireBat::OnBnClickedButtonPause()
 	if (m_ThreadStatus == THREAD_PAUSE)
 	{
 		m_ThreadStatus = THREAD_RUNNING;
+		m_ctrlStaticStateText.SetWindowText(_T("상태: 동작중."));
 		return;
 	}
 
 	if (m_ThreadStatus == THREAD_RUNNING)
 	{
 		m_ThreadStatus = THREAD_PAUSE;
+		m_ctrlStaticStateText.SetWindowText(_T("상태: 일시정지"));
 		return;
 	}
 }

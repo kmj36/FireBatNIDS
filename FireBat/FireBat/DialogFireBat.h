@@ -27,8 +27,12 @@ public:
 	CDialogDeviceSelect *m_DlgDevSel;
 	// 패킷 탐지 규칙 지정
 	CDialogRuleSet *m_DlgRuleSet;
-	// 메인화면 출력 컨트롤
-	CEdit m_ctrlLoggingOut;
+	// 패킷 로그 출력 리스트 컨트롤
+	CListCtrl m_ctrlListLogText;
+	// 패킷 출력 인덱스
+	UINT m_index;
+	// 상태표시줄
+	CStatic m_ctrlStaticStateText;
 public:
 	// 패킷 캡처 핸들
 	pcap_t* m_hPcap;
@@ -57,4 +61,5 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
 	afx_msg void OnBnClickedButtonPause();
+	virtual BOOL OnInitDialog();
 };
