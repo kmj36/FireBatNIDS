@@ -252,7 +252,6 @@ void CDialogRuleSet::OnBnClickedButtonRuleImport()
 
 void CDialogRuleSet::OnBnClickedButtonRuleExport()
 {
-
 	CFileDialog dlg(false, _T("*.ini"), NULL, OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT, _T("INI Files(*.ini)|*.ini|"), NULL);
 
 	if (dlg.DoModal() != IDOK)

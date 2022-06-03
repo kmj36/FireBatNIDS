@@ -27,6 +27,8 @@ public:
 	CDialogDeviceSelect *m_DlgDevSel;
 	// 패킷 탐지 규칙 지정
 	CDialogRuleSet *m_DlgRuleSet;
+	// 패킷 파일 저장 위치 컨트롤
+	CFileDialog *m_DlgPcapFile;
 	// 패킷 로그 출력 리스트 컨트롤
 	CListCtrl m_ctrlListLogText;
 	// 패킷 출력 인덱스
@@ -42,6 +44,10 @@ public:
 	char m_lpszErrbuf[PCAP_ERRBUF_SIZE];
 	// 필터 구조체
 	struct bpf_program m_fcode;
+	// 패킷 덤프 파일
+	pcap_dumper_t* m_dumpfile;
+	// 패킷 파일 저장 위치
+	CString strSavePath;
 public:
 	// 캡처 스레드 함수
 	static UINT CaptureThreadFunc(LPVOID lpParam);

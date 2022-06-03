@@ -52,13 +52,12 @@ BOOL CDialogFireBat::OnInitDialog()
 	m_ctrlListLogText.InsertColumn(2, _T("출발지"), LVCFMT_LEFT, 120);
 	m_ctrlListLogText.InsertColumn(3, _T("도착지"), LVCFMT_LEFT, 120);
 	m_ctrlListLogText.InsertColumn(4, _T("정보"), LVCFMT_LEFT, 380);
-	m_ctrlListLogText.InsertColumn(5, _T("데이터"), LVCFMT_LEFT, 0);
 
 	m_ctrlStaticStateText.SetWindowText(_T("상태: 중지"));
 	return TRUE;
 }
 
-void CDialogFireBat::OnBnClickedButtonStart() // TODO : pcap 파일 저장 위치 사용자에게 입력받기
+void CDialogFireBat::OnBnClickedButtonStart()
 {
 	if (m_pThread)
 	{
@@ -68,12 +67,18 @@ void CDialogFireBat::OnBnClickedButtonStart() // TODO : pcap 파일 저장 위�
 
 	m_DlgDevSel = new CDialogDeviceSelect;
 	m_DlgRuleSet = new CDialogRuleSet;
+	m_DlgPcapFile = new CFileDialog(false, _T("pcap"), NULL, OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT, _T("Pcap Files(*.pcap)|*.pcap|All Files(*.*)|*.*||"), NULL);
 
 	if (m_DlgDevSel->DoModal() == IDCANCEL)
 		return;
 
 	if (m_DlgRuleSet->DoModal() == IDCANCEL)
 		return;
+
+	if (m_DlgPcapFile->DoModal() == IDCANCEL)
+		return;
+	strSavePath = m_DlgPcapFile->GetPathName();
+	AfxMessageBox(strSavePath);
 
 	m_ctrlListLogText.DeleteAllItems();
 	m_index = 0;
@@ -114,6 +119,12 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 		bIsError = true;
 	}
 
+	if ((PThis->m_dumpfile = pcap_dump_open(PThis->m_hPcap, (CStringA)PThis->strSavePath)) == NULL)
+	{
+		AfxMessageBox(_T("저장 경로를 열 수 없습니다."));
+		bIsError = true;
+	}
+
 	if (bIsError)
 	{
 		PThis->m_ThreadStatus = THREAD_STOP;
@@ -121,6 +132,7 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 		PThis->m_CS.Unlock();
 		delete PThis->m_DlgDevSel;
 		delete PThis->m_DlgRuleSet;
+		delete PThis->m_DlgPcapFile;
 		return -1;
 	}
 
@@ -133,19 +145,21 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 	PThis->m_CS.Unlock();
 	delete PThis->m_DlgDevSel;
 	delete PThis->m_DlgRuleSet;
+	delete PThis->m_DlgPcapFile;
 	return 0;
 }
 
 void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* header, const u_char* pkt_data)
 {
 	CDialogFireBat* TThis = (CDialogFireBat*)param;
-	CString strResult, strIndex, strSrc, strDst, strInfo, strPacket;
+	pcap_dump((u_char*)TThis->m_dumpfile, header, pkt_data);
+
+	CString strResult, strIndex, strSrc, strDst, strInfo;
 	strIndex.Format(_T("%u"), TThis->m_index + 1);
 
 	hdr_t pkth = PacketAnalyzing(pkt_data);
 	
 	TThis->m_ctrlListLogText.InsertItem(TThis->m_index, strIndex);
-	/*
 
 	switch(pkth.type)
 	{
@@ -242,7 +256,6 @@ void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* hea
 		break;
 	}
 
-	// TODO : 프로토콜별 정보 출력
 	switch (pkth.type)
 	{
 	case ARP:
@@ -254,11 +267,6 @@ void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* hea
 	case IPV6_TCP_ICMP:
 		break;
 	}
-
-	for (short i = 0; i < header->len; i++)
-		strPacket.AppendFormat(_T("%02X"), pkt_data[i]); 
-	TThis->m_ctrlListLogText.SetItem(TThis->m_index, 5, LVIF_TEXT, strPacket, NULL, NULL, NULL, NULL);
-	*/ // 변경될 가능성이 높은 코드
 
 	TThis->m_index++;
 
