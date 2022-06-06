@@ -191,7 +191,7 @@ void CDialogRuleSet::OnBnClickedOk()
 			
 		
 		if (i + 1 == len)
-			continue;
+			break;
 
 		m_strFilterRule += " or ";
 	}

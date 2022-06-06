@@ -78,7 +78,6 @@ void CDialogFireBat::OnBnClickedButtonStart()
 	if (m_DlgPcapFile->DoModal() == IDCANCEL)
 		return;
 	strSavePath = m_DlgPcapFile->GetPathName();
-	AfxMessageBox(strSavePath);
 
 	m_ctrlListLogText.DeleteAllItems();
 	m_index = 0;
@@ -90,8 +89,10 @@ void CDialogFireBat::OnBnClickedButtonStart()
 		AfxMessageBox(_T("시작하지 못했습니다."));
 		m_ThreadStatus = THREAD_STOP;
 		m_ctrlStaticStateText.SetWindowText(_T("상태: 중지"));
-	}else
-		m_ctrlStaticStateText.SetWindowText(_T("상태: 동작중."));
+		return;
+	}
+
+	m_ctrlStaticStateText.SetWindowText(_T("상태: 동작중."));
 }
 
 UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
@@ -101,25 +102,25 @@ UINT CDialogFireBat::CaptureThreadFunc(LPVOID lpParam)
 
 	PThis->m_CS.Lock();
 
-	if (bIsError || ((PThis->m_hPcap = pcap_open_live((CStringA)PThis->m_DlgDevSel->m_strDeviceID, 65536, 1, 1000, PThis->m_lpszErrbuf)) == NULL))
+	if (!bIsError && ((PThis->m_hPcap = pcap_open_live((CStringA)PThis->m_DlgDevSel->m_strDeviceID, 65536, 1, 1000, PThis->m_lpszErrbuf)) == NULL))
 	{
 		AfxMessageBox(_T("디바이스를 열 수 없습니다."));
 		bIsError = true;
 	}
 
-	if (bIsError || (pcap_compile(PThis->m_hPcap, &PThis->m_fcode, (CStringA)PThis->m_DlgRuleSet->m_strFilterRule, 1, PCAP_NETMASK_UNKNOWN) < 0))
+	if (!bIsError && (pcap_compile(PThis->m_hPcap, &PThis->m_fcode, (CStringA)PThis->m_DlgRuleSet->m_strFilterRule, 1, PCAP_NETMASK_UNKNOWN) < 0))
 	{
 		AfxMessageBox(_T("규칙을 설정하는 과정에서 오류가 발생했습니다."));
 		bIsError = true;
 	}
 
-	if (bIsError || (pcap_setfilter(PThis->m_hPcap, &PThis->m_fcode) < 0))
+	if (!bIsError && (pcap_setfilter(PThis->m_hPcap, &PThis->m_fcode) < 0))
 	{
 		AfxMessageBox(_T("규칙을 적용하는 과정에서 오류가 발생했습니다."));
 		bIsError = true;
 	}
 
-	if ((PThis->m_dumpfile = pcap_dump_open(PThis->m_hPcap, (CStringA)PThis->strSavePath)) == NULL)
+	if (!bIsError && ((PThis->m_dumpfile = pcap_dump_open(PThis->m_hPcap, (CStringA)PThis->strSavePath)) == NULL))
 	{
 		AfxMessageBox(_T("저장 경로를 열 수 없습니다."));
 		bIsError = true;
@@ -256,22 +257,34 @@ void CDialogFireBat::packet_handler(u_char* param, const struct pcap_pkthdr* hea
 		break;
 	}
 
-	switch (pkth.type)
+	switch (pkth.type) // TODO: 정보 출력
 	{
 	case ARP:
+
+		break;
 	case IPV4_TCP:
+
+		break;
 	case IPV4_UDP:
+
+		break;
 	case IPV4_TCP_ICMP:
+
+		break;
 	case IPV6_TCP:
+
+		break;
 	case IPV6_UDP:
+
+		break;
 	case IPV6_TCP_ICMP:
+
 		break;
 	}
 
 	TThis->m_index++;
 
-	if (TThis->m_ThreadStatus == THREAD_PAUSE)
-		while (TThis->m_ThreadStatus == THREAD_PAUSE);
+	while (TThis->m_ThreadStatus == THREAD_PAUSE);
 }
 
 void CDialogFireBat::OnBnClickedButtonStop()
