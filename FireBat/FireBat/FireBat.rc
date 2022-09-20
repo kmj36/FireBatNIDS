@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ÌïúÍµ≠Ïñ¥(ÎåÄÌïúÎØºÍµ≠) resources
+// «—±πæÓ(¥Î«—πŒ±π) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -93,11 +93,9 @@ BEGIN
     BEGIN
         BLOCK "041203b5"
         BEGIN
-            VALUE "CompanyName", "kmj36"
-            VALUE "FileDescription", "kmj36"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "FireBat.exe"
-            VALUE "LegalCopyright", "Copyright 2022. kmj36 All rights reserved."
+            VALUE "LegalCopyright", "Copyright 2022. All rights reserved."
             VALUE "OriginalFilename", "FireBat.exe"
             VALUE "ProductName", "FireBat Network IDS"
             VALUE "ProductVersion", "1.0.0.1"
@@ -112,74 +110,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
-//
-
-IDD_DIALOG_FIREBAT DIALOGEX 0, 0, 449, 322
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "FireBat Network Intrusion Detection Systems"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    EDITTEXT        IDC_EDIT_SHOW_RESULT,79,7,363,308,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | NOT WS_BORDER | WS_VSCROLL,WS_EX_STATICEDGE
-    PUSHBUTTON      "¡ˆøÏ±‚",IDC_BUTTON_CLEAR,17,294,50,14
-    PUSHBUTTON      "Ω√¿€",IDC_BUTTON_CAPTURE_START,17,19,50,14
-    PUSHBUTTON      "¡æ∑·",IDC_BUTTON_CAPTURE_STOP,17,40,50,14
-    PUSHBUTTON      "±‘ƒ¢ ¡ˆ¡§",IDC_BUTTON_SETTING_RULES,17,151,50,14
-END
-
-IDD_DIALOG_SET_RULE DIALOGEX 0, 0, 505, 210
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Set Rule"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,240,7,245,196
-    LTEXT           "∑Œ±◊ πÊΩƒ",IDC_STATIC,15,15,32,8
-    COMBOBOX        IDC_COMBO1,54,12,64,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "«¡∑Œ≈‰ƒ›",IDC_STATIC,17,33,30,8
-    COMBOBOX        IDC_COMBO2,54,31,47,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_IPADDRESS1,"SysIPAddress32",WS_TABSTOP,54,53,100,15
-    EDITTEXT        IDC_EDIT1,161,53,40,15,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT3,54,73,49,14,ES_AUTOHSCROLL
-    LTEXT           "√‚πﬂ¡ˆ",IDC_STATIC,24,56,23,8
-    LTEXT           "∆˜∆Æ",IDC_STATIC,31,76,16,8
-    PUSHBUTTON      "√Îº“",IDC_BUTTON1,183,189,50,14
-    PUSHBUTTON      "√ﬂ∞°",IDC_BUTTON2,6,189,50,14
-    PUSHBUTTON      "ªË¡¶",IDC_BUTTON3,60,189,50,14
-    CONTROL         "",IDC_SPIN1,"msctls_updown32",UDS_ARROWKEYS,486,7,13,196
-    CONTROL         "",IDC_IPADDRESS2,"SysIPAddress32",WS_TABSTOP,54,98,100,15
-    EDITTEXT        IDC_EDIT2,161,98,40,15,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT4,54,118,49,14,ES_AUTOHSCROLL
-    LTEXT           "µµ¬¯¡ˆ",IDC_STATIC,24,101,23,8
-    LTEXT           "∆˜∆Æ",IDC_STATIC,32,121,16,8
-    COMBOBOX        IDC_COMBO4,53,142,146,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "µø¿€",IDC_STATIC,32,145,16,8
-    LTEXT           "ø…º«",IDC_STATIC,32,164,16,8
-    COMBOBOX        IDC_COMBO5,53,162,146,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "¿˚øÎ",IDC_BUTTON4,129,189,50,14
-END
-
-IDD_DIALOG_SET_LOG DIALOGEX 0, 0, 316, 182
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Set Log"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "»Æ¿Œ",IDOK,205,161,50,14
-    PUSHBUTTON      "√Îº“",IDCANCEL,259,161,50,14
-END
-
-IDD_DIALOG_YESNOBOX DIALOGEX 0, 0, 212, 71
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Input"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "»Æ¿Œ",IDOK,99,50,50,14
-    PUSHBUTTON      "√Îº“",IDCANCEL,155,50,50,14
-    CTEXT           "Input",IDC_STATIC_YESNO,7,29,198,8
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // DESIGNINFO
 //
 
@@ -189,36 +119,88 @@ BEGIN
     IDD_DIALOG_FIREBAT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 442
+        RIGHTMARGIN, 610
         TOPMARGIN, 7
-        BOTTOMMARGIN, 315
+        BOTTOMMARGIN, 349
     END
 
-    IDD_DIALOG_SET_RULE, DIALOG
+    IDD_DIALOG_DEVICE_SELECT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 498
+        RIGHTMARGIN, 416
         TOPMARGIN, 7
-        BOTTOMMARGIN, 203
+        BOTTOMMARGIN, 263
     END
 
-    IDD_DIALOG_SET_LOG, DIALOG
+    IDD_DIALOG_RULE_SET, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 309
+        RIGHTMARGIN, 462
         TOPMARGIN, 7
-        BOTTOMMARGIN, 175
-    END
-
-    IDD_DIALOG_YESNOBOX, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 205
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 64
+        BOTTOMMARGIN, 249
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_FIREBAT DIALOGEX 0, 0, 617, 356
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "FireBat Network Instrusion Detection System"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Ω√¿€",IDC_BUTTON_START,21,18,50,14
+    PUSHBUTTON      "¡ﬂ¡ˆ",IDC_BUTTON_STOP,21,40,50,14
+    PUSHBUTTON      "¿œΩ√¡§¡ˆ",IDC_BUTTON_PAUSE,21,71,50,14
+    CONTROL         "",IDC_LIST_LOGTEXT,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_TABSTOP,82,7,528,327,WS_EX_STATICEDGE
+    LTEXT           "ªÛ≈¬«•Ω√¡Ÿ",IDC_STATE,541,341,59,8
+END
+
+IDD_DIALOG_DEVICE_SELECT DIALOGEX 0, 0, 423, 270
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Device Select"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "º±≈√",IDOK,311,249,50,14,WS_DISABLED
+    PUSHBUTTON      "√Îº“",IDCANCEL,366,249,50,14
+    LISTBOX         IDC_LIST_DEVICE,7,7,409,237,LBS_SORT | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    EDITTEXT        IDC_EDIT_SELECT_TRANSPARENC,7,249,179,14,NOT WS_VISIBLE | WS_DISABLED
+END
+
+IDD_DIALOG_RULE_SET DIALOGEX 0, 0, 469, 256
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Set Rules"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_LIST_RULE_LIST,19,7,199,242,LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LTEXT           "«¡∑Œ≈‰ƒ›",IDC_STATIC,221,7,30,8
+    COMBOBOX        IDC_COMBO_RULE_PROTOCOL_SEL,259,7,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "√‚πﬂ¡ˆ ip",IDC_STATIC,221,27,30,8
+    CONTROL         "",IDC_IPADDRESS_RULE_SOURCE_IP,"SysIPAddress32",WS_TABSTOP,259,26,100,15
+    LTEXT           "√‚πﬂ¡ˆ port",IDC_STATIC,366,27,38,8
+    EDITTEXT        IDC_EDIT_RULE_SOURCE_PORT,409,26,48,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "∏µÁ √‚πﬂ¡ˆ ≈Ω¡ˆ",IDC_CHECK_RULE_SOURCE_ANY_IP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,231,43,71,10
+    CONTROL         "∏µÁ ∆˜∆Æ ≈Ω¡ˆ",IDC_CHECK_RULE_SOURCE_ANY_PORT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,376,43,64,10
+    LTEXT           "µµ¬¯¡ˆ ip",IDC_STATIC,221,62,30,8
+    CONTROL         "",IDC_IPADDRESS_RULE_DESTINATION_IP,"SysIPAddress32",WS_TABSTOP,259,61,100,15
+    LTEXT           "µµ¬¯¡ˆ port",IDC_STATIC,366,62,38,8
+    EDITTEXT        IDC_EDIT_RULE_DESTINATION_PORT,409,61,48,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "∏µÁ µµ¬¯¡ˆ ≈Ω¡ˆ",IDC_CHECK_RULE_DESTINATION_ANY_IP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,231,79,71,10
+    CONTROL         "∏µÁ ∆˜∆Æ ≈Ω¡ˆ",IDC_CHECK_RULE_DESTINATION_ANY_PORT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,376,79,64,10
+    LTEXT           "∞®¡ˆ«“ µ•¿Ã≈Õ",IDC_STATIC,221,99,47,8
+    EDITTEXT        IDC_EDIT_RULE_ANALYZE_VALUE,221,113,241,117,ES_AUTOHSCROLL
+    PUSHBUTTON      "∞°¡Æø¿±‚",IDC_BUTTON_RULE_IMPORT,221,235,48,14
+    PUSHBUTTON      "≥ª∫∏≥ª±‚",IDC_BUTTON_RULE_EXPORT,273,235,50,14
+    DEFPUSHBUTTON   "»Æ¿Œ",IDOK,359,235,50,14
+    PUSHBUTTON      "√Îº“",IDCANCEL,412,235,50,14
+    PUSHBUTTON      "ªË¡¶",IDC_BUTTON_RULE_DELETE,428,96,30,14
+    CONTROL         "",IDC_SPIN_RULE_LIST_CHANGE_NUMBER,"msctls_updown32",UDS_ARROWKEYS,7,7,10,242
+    PUSHBUTTON      "¿˚øÎ",IDC_BUTTON_RULE_APPLY,392,96,30,14
+END
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -231,7 +213,17 @@ BEGIN
     0
 END
 
-#endif    // ÌïúÍµ≠Ïñ¥(ÎåÄÌïúÎØºÍµ≠) resources
+IDD_DIALOG_DEVICE_SELECT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_RULE_SET AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // «—±πæÓ(¥Î«—πŒ±π) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -249,8 +241,8 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE 18, 1
 #pragma code_page(949)
-#include "res\FireBat.rc2"  // Microsoft Visual C++ Ïù¥Ïô∏Ïùò Îã§Î•∏ ÎèÑÍµ¨ÏóêÏÑú Ìé∏ÏßëÌïú Î¶¨ÏÜåÏä§ÏûÖÎãàÎã§.
-#include "l.KOR\afxres.rc"      // ÌëúÏ§Ä Íµ¨ÏÑ± ÏöîÏÜåÏûÖÎãàÎã§.
+#include "res\FireBat.rc2"  // Microsoft Visual C++ ????? ??? ???????? ?????? ?????????.
+#include "l.KOR\afxres.rc"      // ??? ???? ???????.
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
